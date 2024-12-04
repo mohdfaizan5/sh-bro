@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  habits    Habit[]
+  tasks     Task[]
+  createdAt DateTime @default(now())
+}
+
+model Habit {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+
+  // Tracking details
+  dailyTarget Int? // Target time in minutes
+  frequency   HabitFrequency
+
+  // User and tracking
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // Time tracking
+  startDate DateTime
+  endDate   DateTime? // Optional end date
+
+  // Performance tracking
+  habitLogs HabitLog[]
+  createdAt DateTime @default(now())
+}
+
+model HabitLog {
+  id          Int      @id @default(autoincrement())
+  habit       Habit    @relation(fields: [habitId], references: [id])
+  habitId     Int
+  date        DateTime
+  timeSpent   Int // Time spent in minutes
+  isCompleted Boolean
+}
+
+model Task {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  isCompleted Boolean @default(false)
+
+  // User association
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+enum ChallengeStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum HabitFrequency {
+  DAILY
+  WEEKLY
+}
+
+// model Challenge {
+//   id          String          @id @default(cuid())
+//   title       String
+//   description String?
+//   startDate   DateTime @default(now())
+//   endDate     DateTime?
+//   user        User            @relation(fields: [userId], references: [id])
+//   userId      String
+//   habits      Habit[]
+//   status      ChallengeStatus @default(ACTIVE)
+//   Task        Task[]
+// }
+
+// Clarifying Questions:
+
+// Can a user have multiple challenges simultaneously?
+// Do challenges have a fixed duration?
+// Are habits tied to specific challenges or can they be independent?
+// Do you want to track historical performance of habits?
+// Should there be different types of habits (daily, weekly, monthly)? 
