@@ -1,10 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { TaskList } from "@/components/task-list";
-import { Zap } from "lucide-react";
+import { ArrowRight, Zap } from "lucide-react";
 import { daysRemaining } from "@/lib/utils";
 import prisma from "@/lib/db";
 import { Progress } from "@/components/ui/progress";
 import RadialChart from "@/components/radial-chart";
+import Link from "next/link";
 
 // Dummy data for UI demonstration
 const dummyTasks = [
@@ -104,6 +105,12 @@ export default async function HomePage() {
           {`"The Magic you're looking for is in the work you're avoiding"`}
         </p>
       </Card>
+      <Link
+        href={"/daily-update"}
+        className="flex items-center gap-2 opacity-80"
+      >
+        Daily Update <ArrowRight size={16} />
+      </Link>
       {/* <RadialChart /> */}
 
       {/* Progress */}
