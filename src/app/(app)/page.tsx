@@ -74,7 +74,7 @@ export default async function HomePage() {
   const days_remaining = daysRemaining("2024-12-30");
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-6">
+    <div className="max-w-md mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center space-x-2">
         <h1 className="text-2xl font-bold">Hey Champion</h1>

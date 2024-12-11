@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { TagsInput } from "./ui/tags-input";
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 const formSchema = z.object({
   // works: z.array(z.string()).nonempty("Please at least one item"),
@@ -36,7 +36,7 @@ export default function UpdateStatusForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // ${values.works.map((work) => " - " + work).join("\n")}
     // const data = `https://wa.me/?text=#daily update
-    const data = `https://api.whatsapp.com/send/?text=#daily update 
+    const data = `#daily update 
 ${values.works}
 
 *How did I add value to the company;*
@@ -47,15 +47,16 @@ ${values.isHardWorked ? "Yes" : "No"}
 
 `;
 
+    const url = `https://api.whatsapp.com/send/?text=${data}`;
+
     // console.log(data);
     // await navigator.clipboard.writeText(data)}
     if ("clipboard" in navigator) {
       const res = await navigator.clipboard.writeText(data);
-      console.log(res); 
-      toast("copied ✔")
-
+      console.log(res);
+      toast("copied ✔");
     }
-    router.push(data);
+    router.push(url);
   }
 
   return (
