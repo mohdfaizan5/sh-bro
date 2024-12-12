@@ -6,6 +6,7 @@ import prisma from "@/lib/db";
 import { Progress } from "@/components/ui/progress";
 import RadialChart from "@/components/radial-chart";
 import Link from "next/link";
+import QuoteCard from "@/components/quote-card";
 
 // Dummy data for UI demonstration
 const dummyTasks = [
@@ -54,6 +55,7 @@ export default async function HomePage() {
   });
 
   const totalTasks = tasks.length;
+  const totalChallenges = await prisma.challenge.count();
   // const completedTasks = dummyTasks.filter(
   //   (task) => task.status === "completed"
   // ).length;
@@ -89,8 +91,10 @@ export default async function HomePage() {
         </Card>
         <div className="grid grid-rows-2 gap-2">
           <Card className="p-4 ">
-            <div className="text-4xl font-bold">{totalTasks}</div>
-            <div className="text-xs text-muted-foreground">tasks remaining</div>
+            <div className="text-4xl font-bold">{totalChallenges}</div>
+            <div className="text-xs text-muted-foreground">
+              challenges remaining
+            </div>
           </Card>
           <Card className="p-4">
             <div className="text-4xl font-bold">{focusedHours}hr</div>
@@ -100,17 +104,8 @@ export default async function HomePage() {
       </div>
 
       {/* Quote */}
-      <Card className="p-4 bg-black/80 text-white">
-        <p className="text-lg text-center font-medium">
-          {`"The Magic you're looking for is in the work you're avoiding"`}
-        </p>
-      </Card>
-      <Link
-        href={"/daily-update"}
-        className="flex items-center gap-2 opacity-80"
-      >
-        Daily Update <ArrowRight size={16} />
-      </Link>
+      <QuoteCard />
+
       {/* <RadialChart /> */}
 
       {/* Progress */}
@@ -130,7 +125,7 @@ export default async function HomePage() {
       {/* Task Lists */}
       {/* <TaskList tasks={routineTasks} /> */}
 
-      <TaskList tasks={tasks} />
+      {/* <TaskList tasks={tasks} /> */}
     </div>
   );
 }
