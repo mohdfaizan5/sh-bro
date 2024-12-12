@@ -13,7 +13,7 @@ const MobileNavbar = ({ className }: { className?: string }) => {
   return (
     <nav
       className={cn(
-        "flex fixed bg-background py-2 h-16 bottom-0 left-0 w-full justify-evenly sm:hidden rounded-t-md border-t",
+        "flex fixed bg-background py-2 h-16 bottom-0 left-0 w-full justify-evenly sm:hidden rounded-t-md border-t text-muted-foreground",
         className
       )}
     >
@@ -21,7 +21,9 @@ const MobileNavbar = ({ className }: { className?: string }) => {
         href={"/"}
         className={cn(
           "flex  flex-col gap-1 items-center justify-center text-sm",
-          path === "/" && "text-muted-foreground scale-105"
+          path === "/" &&
+            "scale-105 text-primary"
+            // border-t-2 border-primary
         )}
       >
         <FaHome size={20} /> Home

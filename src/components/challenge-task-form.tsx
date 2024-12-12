@@ -15,6 +15,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Plus, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { AddNewChallengeTasksAction } from "@/actions/challenge.action";
 
 const taskSchema = z.object({
   name: z.string().min(1, "Task name is required"),
@@ -54,52 +61,74 @@ export function ChallengeTaskForm({ challengeId }: ChallengeTaskFormProps) {
     }
   };
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log(data);
+    console.log(data.tasks.map((task) => task.name));
+
+    const response = await AddNewChallengeTasksAction(
+      data.tasks
+        .filter((task) => {
+          if (task.name) return task.name;
+        })
+        .map((task) => task.name),
+      challengeId
+    );
+    if (response.success) {
+      console.log("submitted");
+    } else {
+      console.log(response.error);
+    }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <h2 className="text-2xl font-bold">
-          Add Tasks to Challenge {challengeId}
-        </h2>
-        {[...Array(taskCount)].map((_, index) => (
-          <FormField
-            key={index}
-            control={form.control}
-            name={`tasks.${index}.name`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Task {index + 1}</FormLabel>
-                <FormControl>
-                  <div className="flex items-center space-x-2">
-                    <Input {...field} placeholder="Enter task name" />
-                    {taskCount > 1 && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => removeTask(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-        <div className="flex justify-between">
-          <Button type="button" onClick={addTask} variant="outline">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Task
-          </Button>
-          <Button type="submit">Save Tasks</Button>
-        </div>
-      </form>
-    </Form>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size={"sm"}>
+          New task <Plus size={16} />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Add New Challenge</DialogTitle>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {[...Array(taskCount)].map((_, index) => (
+              <FormField
+                key={index}
+                control={form.control}
+                name={`tasks.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task {index + 1}</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center space-x-2">
+                        <Input {...field} placeholder="Enter task name" />
+                        {taskCount > 1 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => removeTask(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <div className="flex justify-between">
+              <Button type="button" onClick={addTask} variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Task
+              </Button>
+              <Button type="submit">Save Tasks</Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

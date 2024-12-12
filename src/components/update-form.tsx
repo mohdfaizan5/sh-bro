@@ -47,7 +47,8 @@ ${values.isHardWorked ? "Yes" : "No"}
 
 `;
 
-    const url = `https://api.whatsapp.com/send/?text=${data}`;
+    // const url = `https://api.whatsapp.com/send/?text=${data}`;
+    const url = ` https://wa.me/?text=${encodeURIComponent(data)}`;
 
     // console.log(data);
     // await navigator.clipboard.writeText(data)}

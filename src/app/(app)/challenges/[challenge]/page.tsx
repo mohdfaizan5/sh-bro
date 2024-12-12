@@ -1,29 +1,38 @@
 import { ChallengeTaskForm } from "@/components/challenge-task-form";
+import { ChallengeTaskList } from "@/components/challenge-tasks-list";
 import { Progress } from "@/components/ui/progress";
 import prisma from "@/lib/db";
 import React from "react";
 
 const page = async ({ params }: { params: Promise<{ challenge: string }> }) => {
   const { challenge: id } = await params;
-  // if (!id || Number(id)) return <div>Challenge not found</div>;
+  if (!id || isNaN(Number(id))) return <div>Invalid Id</div>;
   const challenge = await prisma.challengeTask.findMany({
-    where: { challengeId: 2 },
+    where: { challengeId: Number(id) },
+    orderBy: {
+      isCompleted: "desc",
+    },
   });
-  // if (!challenge) return <div>Challenge not found</div>;
+  if (!challenge) return <div>Challenge not found</div>;
+
+  const totalChallengeTasks = challenge.length;
+  const totalPendingTasks = challenge.filter((cha) => !cha.isCompleted).length;
+  const percentage =
+    ((totalChallengeTasks - totalPendingTasks) / totalChallengeTasks) * 100;
 
   return (
-    <div>
-      <div>
-        <Progress value={12} aria-label="12% increase" />
-        <div className="text-xs text-muted-foreground line-clamp-2">70%</div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Tasks</h2>
+        <ChallengeTaskForm challengeId={Number(id)} />
       </div>
-      {challenge.length > 0 &&
-        challenge.map((c, i) => (
-          <div key={i}>
-            <h2>{c.name}</h2>
-          </div>
-        ))}
-      <ChallengeTaskForm challengeId={2} />
+      <div>
+        <Progress value={percentage} aria-label="12% increase" />
+        <div className="text-xs text-muted-foreground line-clamp-2">
+          {Math.floor(percentage)}% completed
+        </div>
+      </div>
+      {challenge.length > 0 && <ChallengeTaskList tasks={challenge} />}
     </div>
   );
 };

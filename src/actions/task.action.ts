@@ -20,7 +20,6 @@ export const addNewTaskAction = async (task: { name: string }) => {
     data: {
       name: task.name,
       userId: 1,
-      challengeId: 1,
     },
   });
   revalidatePath("/");
